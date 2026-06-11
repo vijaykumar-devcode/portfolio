@@ -1,8 +1,8 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Bell, BellOff, Trash2, MessageSquare } from 'lucide-react';
 import { useNotifications, useMarkNotificationRead, useDeleteNotification } from '../../services/notificationService.js';
-import { Button } from '../../components/ui/Button.js';
+
 import { cn } from '../../components/ui/Button.js';
 
 export default function AdminNotifications() {

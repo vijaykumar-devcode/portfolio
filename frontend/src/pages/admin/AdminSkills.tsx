@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +13,7 @@ const skillSchema = z.object({
   icon: z.string().min(1, 'Icon identifier is required'),
   color: z.string().min(1, 'Color classes are required'),
   items: z.string().min(1, 'At least one item is required (comma separated)'),
-  isVisible: z.boolean().default(true),
+  isVisible: z.boolean(),
 });
 
 type SkillFormData = z.infer<typeof skillSchema>;

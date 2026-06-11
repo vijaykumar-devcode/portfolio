@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Building2, Briefcase, CheckCircle2, Trash2, MailOpen } from 'lucide-react';
 import { useMessages, useUpdateMessageStatus, useDeleteMessage } from '../../services/messageService.js';

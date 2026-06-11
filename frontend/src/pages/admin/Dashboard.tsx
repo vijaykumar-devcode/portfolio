@@ -8,7 +8,7 @@ import { useMessages } from '../../services/messageService.js';
 import { useProfile, useUpdateProfile, useUploadCV } from '../../services/userService.js';
 import { Button } from '../../components/ui/Button.js';
 import { Input } from '../../components/ui/Input.js';
-import { UploadCloud, FileText, CheckCircle, Shield } from 'lucide-react';
+import { UploadCloud, FileText, Shield } from 'lucide-react';
 
 const StatCard = ({ label, value, icon: Icon, color }: { label: string; value: number; icon: React.ElementType; color: string }) => (
   <motion.div

@@ -16,7 +16,7 @@ const schema = z.object({
   slug: z.string().min(2, 'Slug required').regex(/^[a-z0-9-]+$/, 'Slug: lowercase, numbers, hyphens only'),
   content: z.string().min(20, 'Content is required'),
   coverImage: z.string().min(1, 'Cover image required'),
-  isPublished: z.boolean().default(false),
+  isPublished: z.boolean(),
 });
 
 type FormValues = z.infer<typeof schema>;
