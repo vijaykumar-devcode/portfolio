@@ -13,7 +13,7 @@ export const authUser = async (req: Request, res: Response, next: NextFunction) 
     const user = await User.findOne({ username });
 
     if (user && (await user.matchPassword(password))) {
-      generateToken(res, user._id as string);
+      generateToken(res, user._id.toString());
 
       res.status(200).json({
         success: true,

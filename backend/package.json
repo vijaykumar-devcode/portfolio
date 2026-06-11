@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec tsx src/server.ts",
-    "start": "node src/server.js",
+    "start": "node dist/server.js",
     "build": "tsc",
     "seed": "tsx src/seed.ts"
   },
@@ -32,7 +32,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.1.0",
-    "@types/node": "^25.9.2",
+    "@types/node": "^25.9.3",
     "@types/nodemailer": "^8.0.0",
     "nodemon": "^3.1.14",
     "tsx": "^4.22.4",
