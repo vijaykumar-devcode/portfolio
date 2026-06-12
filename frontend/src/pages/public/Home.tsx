@@ -151,9 +151,9 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-full border-2 border-primary/20 bg-background/50 backdrop-blur-sm" />
                 <div className="absolute inset-3 rounded-full overflow-hidden border-4 border-surface shadow-2xl bg-surface">
                   <img
-                    src="https://avatars.githubusercontent.com/u/1?v=4" 
+                    src="/myphoto.png" 
                     alt="Profile"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                     onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=Your+Name&size=512&background=random"; }}
                   />
                 </div>
