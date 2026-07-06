@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from './lib/axios.js';
 
@@ -25,7 +25,13 @@ const AdminNotifications = React.lazy(() => import('./pages/admin/AdminNotificat
 
 // Page transition wrapper
 const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.98, filter: 'blur(8px)' }} 
+    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} 
+    exit={{ opacity: 0, scale: 1.02, filter: 'blur(8px)' }} 
+    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    className="w-full h-full"
+  >
     {children}
   </motion.div>
 );
@@ -109,12 +115,12 @@ function App() {
               </p>
 
               <div className="flex gap-4">
-                <a
-                  href="/"
-                  className="px-6 py-3 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition"
+                <Link
+                  to="/"
+                  className="px-6 py-3 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition inline-block"
                 >
                   Back Home
-                </a>
+                </Link>
               </div>
 
               <div className="mt-16 text-8xl font-black text-primary/10 select-none">

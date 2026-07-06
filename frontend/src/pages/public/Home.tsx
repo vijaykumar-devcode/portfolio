@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Mail, ExternalLink, Code2, Server, Database, GitBranch, Palette, Wrench, Network, Smartphone, CheckCircle, X } from 'lucide-react';
+import { ArrowRight, Mail, ExternalLink, Code2, Server, Database, GitBranch, Palette, Wrench, Network, Smartphone, CheckCircle, X, ChevronRight, Send } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,8 @@ import { useCertificates } from '../../services/certificateService.js';
 import { useSendMessage } from '../../services/messageService.js';
 import { useSkills } from '../../services/skillService.js';
 import { useProfile } from '../../services/userService.js';
+import { ScrambleText, TextReveal } from '../../components/ui/TypographyAnimations.js';
+import { TiltCard } from '../../components/ui/TiltCard.js';
 
 // ─── Animation Variants ────────────────────────────────────────────
 const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
@@ -56,9 +58,11 @@ export default function Home() {
   const selectedCertificateData = certificates?.find(c => c._id === selectedCert);
   const [contactSent, setContactSent] = useState(false);
 
-  const { register: registerContact, handleSubmit: handleContactSubmit, formState: { errors: contactErrors }, reset: resetContact } = useForm<ContactFormValues>({
+  const { register: registerContact, handleSubmit: handleContactSubmit, formState: { errors: contactErrors }, reset: resetContact, watch } = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
   });
+
+  const messageContent = watch('content') || '';
 
   const onContactSubmit = async (data: ContactFormValues) => {
     try {
@@ -93,15 +97,15 @@ export default function Home() {
               </motion.p>
 
               <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-text mb-6 leading-tight">
-                Vijay{' '}
+                <ScrambleText text="Vijay" />{' '}
                 <span className="text-transparent bg-clip-text bg-linear-to-br from-primary to-[#7c3aed]">
-                  Kumar
+                  <ScrambleText text="Kumar" />
                 </span>
               </motion.h1>
 
-              <motion.p variants={fadeUp} className="text-xl sm:text-2xl text-muted max-w-2xl mb-4 leading-relaxed">
-                Full Stack Developer | Problem Solver | Lifelong Learner
-              </motion.p>
+              <div className="text-xl sm:text-2xl text-muted max-w-2xl mb-4 leading-relaxed font-medium">
+                <TextReveal text="Full Stack Developer | Problem Solver | Lifelong Learner" delay={0.3} />
+              </div>
 
               <motion.p variants={fadeUp} className="text-muted max-w-xl mb-10 leading-relaxed">
                 I craft modern, scalable web applications that combine clean architecture, high performance, and exceptional user experiences.I enjoy turning complex ideas into reliable digital products that make an impact.
@@ -109,9 +113,11 @@ export default function Home() {
 
               <motion.div variants={fadeUp} className="flex flex-wrap gap-4 mb-12">
                 <a href="#projects">
-                  <Button size="lg" variant="primary" className="gap-2 shadow-lg shadow-primary/25 cursor-pointer">
-                    View My Projects <ArrowRight size={18} />
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button size="lg" variant="primary" className="gap-2 shadow-lg shadow-primary/25 cursor-pointer">
+                      View My Projects <ArrowRight size={18} />
+                    </Button>
+                  </motion.div>
                 </a>
                 <div className="flex gap-4">
               <a 
@@ -119,9 +125,13 @@ export default function Home() {
                 target="_blank" 
                 rel="noreferrer" 
                 onClick={(e) => !profile?.cvUrl && e.preventDefault()}
+                aria-disabled={!profile?.cvUrl}
               >
-                <Button  size="lg" className="bg-purple-400  hover:bg-blue-300 hover:text-grey-600 transition-colors cursor-pointer text-md"
-                variant="outline">{profile?.cvUrl ? 'Download CV' : 'CV Unavailable'}</Button>
+                <motion.div whileHover={profile?.cvUrl ? { scale: 1.05 } : {}} whileTap={profile?.cvUrl ? { scale: 0.95 } : {}}>
+                  <Button size="lg" variant="outline" className={!profile?.cvUrl ? "opacity-50 cursor-not-allowed" : "cursor-pointer text-md"} disabled={!profile?.cvUrl}>
+                    {profile?.cvUrl ? 'Download CV' : 'CV Unavailable'}
+                  </Button>
+                </motion.div>
               </a>
             </div>
               </motion.div>
@@ -139,25 +149,26 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Circular Image Section */}
             <div className="lg:w-2/5 flex justify-center lg:justify-end">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
-                className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-100 lg:h-100"
-              >
-                <div className="absolute inset-0 bg-linear-to-tr from-primary to-purple-500 rounded-full blur-2xl opacity-20 animate-pulse" />
-                <div className="absolute inset-0 rounded-full border-2 border-primary/20 bg-background/50 backdrop-blur-sm" />
-                <div className="absolute inset-3 rounded-full overflow-hidden border-4 border-surface shadow-2xl bg-surface">
-                  <img
-                    src="/myphoto.png" 
-                    alt="Profile"
-                    className="w-full h-full object-cover object-top"
-                    onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=Your+Name&size=512&background=random"; }}
-                  />
-                </div>
-              </motion.div>
+              <TiltCard>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
+                  className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-100 lg:h-100"
+                >
+                  <div className="absolute inset-0 bg-linear-to-tr from-primary to-purple-500 rounded-full blur-2xl opacity-20 animate-pulse" />
+                  <div className="absolute inset-0 rounded-full border-2 border-primary/20 bg-background/50 backdrop-blur-sm" />
+                  <div className="absolute inset-3 rounded-full overflow-hidden border-4 border-surface shadow-2xl bg-surface">
+                    <img
+                      src="/myphoto.png" 
+                      alt="Vijay Kumar - Full Stack Developer"
+                      className="w-full h-full object-cover object-top"
+                      onError={(e) => { e.currentTarget.src = "https://ui-avatars.com/api/?name=Your+Name&size=512&background=random"; }}
+                    />
+                  </div>
+                </motion.div>
+              </TiltCard>
             </div>
           </div>
         </div>
@@ -182,21 +193,25 @@ export default function Home() {
                I'm a CSE student at IIIT Bhagalpur passionate about full-stack development and creating scalable, user-centric web applications using the MERN stack.
               </p>
 
-              <ul className="text-muted leading-relaxed mb-4 space-y-2">
-                <li>
-                  🔹 <strong>Frontend Development:</strong> Building responsive and interactive user interfaces using React.js, Next.js, TypeScript, Tailwind CSS, and modern UI/UX principles.
+              <ul className="text-muted leading-relaxed mb-4 space-y-3">
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="text-primary mt-1 shrink-0" size={18} />
+                  <span><strong>Frontend Development:</strong> Building responsive and interactive user interfaces using React.js, Next.js, TypeScript, Tailwind CSS, and modern UI/UX principles.</span>
                 </li>
 
-                <li>
-                  🔹 <strong>Backend Development:</strong> Developing scalable server-side applications with Node.js, Express.js, MongoDB, and RESTful APIs.
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="text-primary mt-1 shrink-0" size={18} />
+                  <span><strong>Backend Development:</strong> Developing scalable server-side applications with Node.js, Express.js, MongoDB, and RESTful APIs.</span>
                 </li>
 
-                <li>
-                  🔹 <strong>Computer Science Fundamentals:</strong> Strong understanding of Data Structures & Algorithms, OOP, DBMS, OS, Computer Networks, and Software Engineering.
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="text-primary mt-1 shrink-0" size={18} />
+                  <span><strong>Computer Science Fundamentals:</strong> Strong understanding of Data Structures & Algorithms, OOP, DBMS, OS, Computer Networks, and Software Engineering.</span>
                 </li>
 
-                <li>
-                  🔹 <strong>System Design & Engineering:</strong> Focused on writing clean, maintainable, and scalable code while following industry-standard architecture and best practices.
+                <li className="flex items-start gap-3">
+                  <ChevronRight className="text-primary mt-1 shrink-0" size={18} />
+                  <span><strong>System Design & Engineering:</strong> Focused on writing clean, maintainable, and scalable code while following industry-standard architecture and best practices.</span>
                 </li>
               </ul>
 
@@ -204,8 +219,10 @@ export default function Home() {
                 Beyond coding, I'm deeply interested in understanding the principles behind building reliable and high-performance systems. Currently, I'm focused on developing end-to-end full-stack applications
               </p>
                   <a href="#contact">
-                  <Button size="lg" variant="outline" className="gap-2 hover:bg-blue-400/30 cursor-pointer">Hire Me</Button>
-                </a>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+                      <Button size="lg" variant="outline" className="gap-2 cursor-pointer">Hire Me</Button>
+                    </motion.div>
+                  </a>
           </motion.div>
 
           <motion.div variants={fadeUp} className="grid grid-cols-2 gap-10">
@@ -243,8 +260,8 @@ export default function Home() {
           ) : skills?.map((skill) => {
             const Icon = iconMap[skill.icon] || Code2; // Fallback to Code2 if not found
             return (
-              <motion.div key={skill._id} variants={fadeUp} className="bg-surface border border-border rounded-2xl p-6 hover:border-primary/50 transition-colors group">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${skill.color}`}>
+              <motion.div key={skill._id} variants={fadeUp} whileHover={{ y: -5, transition: { duration: 0.2 } }} className="bg-surface border border-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-300 group shadow-sm hover:shadow-md hover:shadow-primary/5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-primary/10 text-primary">
                   <Icon size={22} />
                 </div>
                 <h3 className="font-semibold text-text mb-3">{skill.category}</h3>
@@ -431,55 +448,74 @@ export default function Home() {
           <p className="text-muted">Have an opportunity or want to connect? Drop a message below.</p>
         </motion.div>
 
-        {contactSent ? (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-surface border border-border rounded-2xl p-10 text-center shadow-lg">
-            <CheckCircle className="text-green-500 mx-auto mb-4" size={48} />
-            <h3 className="text-2xl font-bold text-text mb-2">Message Sent!</h3>
-            <p className="text-muted mb-6">Thank you for reaching out. I'll get back to you shortly.</p>
-            <Button onClick={() => setContactSent(false)} variant="outline">Send Another Message</Button>
+        {contactSent && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 p-4 bg-green-500/10 border border-green-500/20 text-green-500 rounded-xl flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <CheckCircle size={20} />
+              <span className="font-medium">Message sent successfully! I'll get back to you shortly.</span>
+            </div>
+            <button onClick={() => setContactSent(false)} className="hover:bg-green-500/20 p-1 rounded-md transition-colors"><X size={16}/></button>
           </motion.div>
-        ) : (
-          <motion.form variants={fadeUp} onSubmit={handleContactSubmit(onContactSubmit)} className="bg-surface border border-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="contact-name" className="block text-sm font-medium text-text mb-1.5">Name *</label>
-                <Input id="contact-name" autoComplete="name" {...registerContact('name')} placeholder="Your Name" error={contactErrors.name?.message} />
-              </div>
-              <div>
-                <label htmlFor="contact-email" className="block text-sm font-medium text-text mb-1.5">Email *</label>
-                <Input id="contact-email" type="email" autoComplete="email" {...registerContact('email')} placeholder="you@company.com" error={contactErrors.email?.message} />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="contact-company" className="block text-sm font-medium text-text mb-1.5">Company</label>
-                <Input id="contact-company" autoComplete="organization" {...registerContact('company')} placeholder="Company Name (optional)" />
-              </div>
-              <div>
-                <label htmlFor="contact-jobrole" className="block text-sm font-medium text-text mb-1.5">Job Role</label>
-                <Input id="contact-jobrole" autoComplete="organization-title" {...registerContact('jobRole')} placeholder="e.g. Frontend Engineer" />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="contact-subject" className="block text-sm font-medium text-text mb-1.5">Subject *</label>
-              <Input id="contact-subject" autoComplete="off" {...registerContact('subject')} placeholder="e.g. Job Opportunity" error={contactErrors.subject?.message} />
-            </div>
-            <div>
-              <label htmlFor="contact-message" className="block text-sm font-medium text-text mb-1.5">Message *</label>
-              <textarea
-                id="contact-message"
-                {...registerContact('content')}
-                rows={5}
-                placeholder="Your message..."
-                className="flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors"
-              />
-              {contactErrors.content && <p className="mt-1 text-xs text-red-500">{contactErrors.content.message}</p>}
-            </div>
-            <Button id="contact-submit" type="submit" variant="primary" size="lg" className="w-full mt-2" disabled={isSending}>
-              {isSending ? 'Sending...' : 'Send Message'}
-            </Button>
-          </motion.form>
         )}
+
+        <motion.form variants={fadeUp} onSubmit={handleContactSubmit(onContactSubmit)} className="bg-surface border border-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label htmlFor="contact-name" className="block text-sm font-medium text-text mb-1.5">Name *</label>
+              <Input id="contact-name" autoComplete="name" {...registerContact('name')} placeholder="Your Name" error={contactErrors.name?.message} />
+            </div>
+            <div>
+              <label htmlFor="contact-email" className="block text-sm font-medium text-text mb-1.5">Email *</label>
+              <Input id="contact-email" type="email" autoComplete="email" {...registerContact('email')} placeholder="you@company.com" error={contactErrors.email?.message} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label htmlFor="contact-company" className="block text-sm font-medium text-text mb-1.5">Company</label>
+              <Input id="contact-company" autoComplete="organization" {...registerContact('company')} placeholder="Company Name (optional)" />
+            </div>
+            <div>
+              <label htmlFor="contact-jobrole" className="block text-sm font-medium text-text mb-1.5">Job Role</label>
+              <Input id="contact-jobrole" autoComplete="organization-title" {...registerContact('jobRole')} placeholder="e.g. Frontend Engineer" />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="contact-subject" className="block text-sm font-medium text-text mb-1.5">Subject *</label>
+            <Input id="contact-subject" autoComplete="off" {...registerContact('subject')} placeholder="e.g. Job Opportunity" error={contactErrors.subject?.message} />
+          </div>
+          <div>
+            <div className="flex justify-between items-end mb-1.5">
+              <label htmlFor="contact-message" className="block text-sm font-medium text-text">Message *</label>
+              <span className={`text-xs font-medium ${messageContent.length > 0 && messageContent.length < 10 ? 'text-red-400' : 'text-muted'}`}>{messageContent.length} / 10 min chars</span>
+            </div>
+            <textarea
+              id="contact-message"
+              {...registerContact('content')}
+              rows={5}
+              placeholder="Your message..."
+              className="flex w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-text placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all duration-300 shadow-sm"
+            />
+            {contactErrors.content && <p className="mt-1 text-xs text-red-500">{contactErrors.content.message}</p>}
+          </div>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button id="contact-submit" type="submit" variant="primary" size="lg" className="w-full mt-2 shadow-md shadow-primary/20 relative overflow-hidden group" disabled={isSending}>
+              <motion.span animate={isSending ? { y: -40, opacity: 0 } : { y: 0, opacity: 1 }} className="flex items-center justify-center gap-2 w-full">
+                {isSending ? 'Sending...' : 'Send Message'}
+                {!isSending && <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+              </motion.span>
+              
+              {/* Paper airplane flying animation */}
+              <motion.div 
+                initial={{ x: -100, y: 100, opacity: 0 }} 
+                animate={isSending ? { x: [0, 200], y: [0, -200], opacity: [1, 0] } : {}} 
+                transition={{ duration: 1, ease: "easeOut" }} 
+                className="absolute"
+              >
+                {isSending && <Send size={24} className="text-white" />}
+              </motion.div>
+            </Button>
+          </motion.div>
+        </motion.form>
       </Section>
 
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { cn } from '../ui/Button.js'; // to be updated
 
@@ -7,7 +8,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
+    return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
   });
   const location = useLocation();
 
@@ -95,8 +96,10 @@ export function Navbar() {
             <button onClick={toggleTheme} className="text-muted hover:text-primary">
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-text">
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="w-6 h-6 relative flex flex-col justify-center items-center text-text focus:outline-none">
+              <motion.span animate={isMobileMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }} className="w-6 h-[2px] bg-current absolute rounded-full" />
+              <motion.span animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }} className="w-6 h-[2px] bg-current absolute rounded-full" />
+              <motion.span animate={isMobileMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }} className="w-6 h-[2px] bg-current absolute rounded-full" />
             </button>
           </div>
         </div>
